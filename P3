@@ -1,0 +1,54 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Gramatica 1:");
+        GenerateStrings("S", "AB");
+
+        Console.WriteLine("\nGramatica 2:");
+        GenerateStrings("S", "X");
+    }
+
+    static void GenerateStrings(string currentSymbol, string production)
+    {
+        GenerateStringsHelper(currentSymbol, production, "");
+    }
+
+    static void GenerateStringsHelper(string currentSymbol, string production, string currentString)
+    {
+        if (currentSymbol == "")
+        {
+            Console.WriteLine(currentString);
+            return;
+        }
+
+        int index = production.IndexOf(currentSymbol);
+        if (index != -1)
+        {
+            string newProduction = production.Substring(0, index) + production.Substring(index + currentSymbol.Length);
+
+            foreach (char symbol in GetTerminals(newProduction))
+            {
+                GenerateStringsHelper(symbol.ToString(), newProduction, currentString + symbol);
+            }
+        }
+    }
+
+    static HashSet<char> GetTerminals(string production)
+    {
+        HashSet<char> terminals = new HashSet<char>();
+
+        foreach (char symbol in production)
+        {
+            if (char.IsLetter(symbol) && char.IsLower(symbol))
+            {
+                terminals.Add(symbol);
+            }
+        }
+
+        return terminals;
+    }
+}
